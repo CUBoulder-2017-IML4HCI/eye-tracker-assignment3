@@ -10,13 +10,17 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Bind the socket to the port
 server_address = ('', 6447)
-print >>sys.stderr, 'starting up on %s port %s' % server_address
+print 'starting up on %s port %s' % server_address
 sock.bind(server_address)
 
 while True:
     data, address = sock.recvfrom(18)
     
-    # print data
+    print "data", data
+
+    sys.stdout.flush()
+
+    
     oscmsg = OSC.OSCMessage()
     oscmsg.setAddress("/wek/inputs")
     arr = data.split(',')
@@ -24,10 +28,10 @@ while True:
 
     for val in arr:
       try:
+        print "appending", float(val) 
         oscmsg.append( float(val) )
       except ValueError:
+        print "error, appening 0.0"
         oscmsg.append( 0.0 )
 
-      c.send(oscmsg)
-
-
+    c.send(oscmsg)
